@@ -44,6 +44,9 @@ public class FortuneTellerController : MonoBehaviour
 
     private AudioSource _audioSource;
     private AudioSource _musicSource;
+    private GameObject _uiRoot;
+    private bool _uiHiddenByConfig;
+    private bool _choicesCurrentlyVisible;
     private string[] _currentChoices = Array.Empty<string>();
     private string _voiceId = string.Empty;
     private string _apiKey = string.Empty;
@@ -136,6 +139,7 @@ public class FortuneTellerController : MonoBehaviour
         });
 
         ConfigureBackgroundMusic();
+        ApplyUiVisibility(config != null && !config.hideDialogueUI);
 
         StartCoroutine(RunStartupSequence());
     }
@@ -144,6 +148,7 @@ public class FortuneTellerController : MonoBehaviour
     {
         if (dialogueText != null && choiceButtons != null && choiceButtons.Length >= 3)
         {
+            CacheUiRoot();
             if (EventSystem.current == null)
             {
                 CreateEventSystem();
@@ -158,6 +163,7 @@ public class FortuneTellerController : MonoBehaviour
 
         var canvasGo = new GameObject("FortuneTellerCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
         DontDestroyOnLoad(canvasGo);
+        _uiRoot = canvasGo;
 
         var canvas = canvasGo.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -241,6 +247,7 @@ public class FortuneTellerController : MonoBehaviour
         }
 
         SetChoicesVisible(false);
+        CacheUiRoot();
     }
 
     private void CreateEventSystem()
@@ -1134,9 +1141,10 @@ public class FortuneTellerController : MonoBehaviour
 
     private void SetChoicesVisible(bool visible)
     {
+        _choicesCurrentlyVisible = visible;
         if (_choicesContainer != null)
         {
-            _choicesContainer.SetActive(visible);
+            _choicesContainer.SetActive(!_uiHiddenByConfig && visible);
         }
     }
 
@@ -1151,8 +1159,67 @@ public class FortuneTellerController : MonoBehaviour
         {
             if (button != null)
             {
-                button.interactable = value;
+                button.interactable = value && !_uiHiddenByConfig;
             }
+        }
+    }
+
+    private void ApplyUiVisibility(bool visible)
+    {
+        _uiHiddenByConfig = !visible;
+
+        if (_uiRoot != null && _uiRoot != gameObject)
+        {
+            if (_uiRoot.activeSelf != visible)
+            {
+                _uiRoot.SetActive(visible);
+            }
+        }
+        else
+        {
+            if (dialogueText != null)
+            {
+                dialogueText.gameObject.SetActive(visible);
+            }
+            if (_choicesContainer != null)
+            {
+                _choicesContainer.SetActive(visible && _choicesCurrentlyVisible);
+            }
+        }
+
+        if (!visible)
+        {
+            SetChoicesInteractable(false);
+        }
+        else if (_choicesContainer != null)
+        {
+            _choicesContainer.SetActive(_choicesCurrentlyVisible);
+        }
+    }
+
+    private void CacheUiRoot()
+    {
+        if (_uiRoot != null)
+        {
+            return;
+        }
+
+        if (dialogueText != null)
+        {
+            var canvas = dialogueText.GetComponentInParent<Canvas>(true);
+            if (canvas != null)
+            {
+                _uiRoot = canvas.gameObject;
+                return;
+            }
+
+            _uiRoot = dialogueText.gameObject;
+            return;
+        }
+
+        if (_choicesContainer != null)
+        {
+            _uiRoot = _choicesContainer;
         }
     }
 

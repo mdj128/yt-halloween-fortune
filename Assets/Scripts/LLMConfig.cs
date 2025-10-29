@@ -54,6 +54,8 @@ public class LLMConfig : ScriptableObject
     [Range(0f, 1f)] public float backgroundMusicVolume = 0.35f;
     public bool backgroundMusicLoop = true;
     public bool playBackgroundMusicOnStart = true;
+    [Header("UI")]
+    public bool hideDialogueUI = false;
 
     public bool HasVoiceId => !string.IsNullOrWhiteSpace(elevenLabsVoiceId);
     public bool HasApiKey => !string.IsNullOrWhiteSpace(elevenLabsApiKey);

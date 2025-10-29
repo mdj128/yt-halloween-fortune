@@ -2,6 +2,8 @@
 
 Interactive Halloween scene starring a skeletal fortune teller who converses via a local LLM and speaks through ElevenLabs text-to-speech. The project targets Unity 6.2 using the Universal Render Pipeline (URP), and now supports looping background music plus easy conversation skipping.
 
+![alt text](screenshot.png)
+
 ## Features
 - **Conversational Fortune Teller** driven by a local OpenAI-compatible chat endpoint.
 - **Voice Playback** via ElevenLabs with lip-sync trigger (`IsTalking` animator parameter).
