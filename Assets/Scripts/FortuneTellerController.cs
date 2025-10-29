@@ -575,6 +575,11 @@ public class FortuneTellerController : MonoBehaviour
             yield break;
         }
 
+        if (config != null)
+        {
+            yield return new WaitForSecondsRealtime(Mathf.Max(0f, config.startDelay));
+        }
+
         if (!string.IsNullOrWhiteSpace(textOverride))
         {
             dialogueText.text = textOverride;
