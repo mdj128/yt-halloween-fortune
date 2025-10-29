@@ -193,12 +193,14 @@ public class FortuneTellerController : MonoBehaviour
         dialogueText.horizontalOverflow = HorizontalWrapMode.Wrap;
         dialogueText.verticalOverflow = VerticalWrapMode.Truncate;
         var textLayout = textGo.gameObject.AddComponent<LayoutElement>();
-        textLayout.preferredHeight = 180f;
+        textLayout.minHeight = 120f;
+        textLayout.preferredHeight = 160f;
+        textLayout.flexibleHeight = 1f;
 
         var choicesContainer = CreateRectTransform("Choices", panel);
         _choicesContainer = choicesContainer.gameObject;
         var choicesLayout = choicesContainer.gameObject.AddComponent<VerticalLayoutGroup>();
-        choicesLayout.spacing = 10f;
+        choicesLayout.spacing = 8f;
         choicesLayout.childAlignment = TextAnchor.UpperCenter;
         choicesLayout.childControlWidth = true;
         choicesLayout.childControlHeight = true;
@@ -222,12 +224,13 @@ public class FortuneTellerController : MonoBehaviour
             button.colors = colors;
 
             var btLayout = buttonGo.gameObject.AddComponent<LayoutElement>();
-            btLayout.minHeight = 60f;
+            btLayout.minHeight = 48f;
+            btLayout.preferredHeight = 52f;
 
             var labelGo = CreateRectTransform("Text", buttonGo);
             var label = labelGo.gameObject.AddComponent<Text>();
             label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            label.fontSize = 22;
+            label.fontSize = 20;
             label.color = new Color(0.95f, 0.94f, 0.9f);
             label.alignment = TextAnchor.MiddleCenter;
             label.horizontalOverflow = HorizontalWrapMode.Wrap;
@@ -606,12 +609,14 @@ public class FortuneTellerController : MonoBehaviour
         if (string.IsNullOrWhiteSpace(spoken))
         {
             SetTalkingState(false);
+            dialogueText.text = spoken;
             yield break;
         }
 
         if (string.IsNullOrWhiteSpace(_apiKey) || string.IsNullOrWhiteSpace(_voiceId))
         {
             SetTalkingState(false);
+            dialogueText.text = spoken;
             yield break;
         }
 
@@ -623,6 +628,7 @@ public class FortuneTellerController : MonoBehaviour
             {
                 Debug.LogError($"FortuneTellerController: ElevenLabs TTS request failed: {ttsRequest.error}\n{TryGetResponseText(ttsRequest)}");
                 SetTalkingState(false);
+                dialogueText.text = spoken;
                 yield break;
             }
 
@@ -631,6 +637,7 @@ public class FortuneTellerController : MonoBehaviour
             {
                 Debug.LogError($"FortuneTellerController: Received empty audio clip. Content-Type={ttsRequest.GetResponseHeader("Content-Type")}\n{TryGetResponseText(ttsRequest)}");
                 SetTalkingState(false);
+                dialogueText.text = spoken;
                 yield break;
             }
 
