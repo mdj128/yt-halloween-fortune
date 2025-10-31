@@ -2,6 +2,8 @@
 
 Interactive Halloween scene starring a skeletal fortune teller who converses via a local LLM and speaks through ElevenLabs text-to-speech. The project targets Unity 6.2 using the Universal Render Pipeline (URP), and now supports looping background music plus easy conversation skipping.
 
+YouTube Demo: https://www.youtube.com/watch?v=XDFwaDRyMnw
+
 ![alt text](screenshot.png)
 
 ## Features
@@ -21,8 +23,8 @@ Interactive Halloween scene starring a skeletal fortune teller who converses via
 ## Getting Started
 1. **Clone & Install LFS**
    ```bash
-   git clone <your-url>
-   cd Halloween_Fortune
+   git clone https://github.com/mdj128/yt-halloween-fortune.git
+   cd yt-halloween-fortune
    git lfs install
    git lfs pull
    ```
